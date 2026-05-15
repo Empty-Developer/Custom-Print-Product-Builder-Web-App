@@ -25,9 +25,9 @@ export const WorkspaceMenu = [
 
 export const SizeOption = [
   {
-    name: 'Кружка 125мм',
-    width: 170,
-    height: 170,
+    name: 'Кружка 200мм',
+    width: 756,
+    height: 756,
     img: '/cup.png',
   },
   {

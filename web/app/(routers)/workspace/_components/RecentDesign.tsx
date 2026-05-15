@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react"
+import CustomDialog from "./CustomDialog";
 
 function RecentDesign() {
   const [designList, setDesignList] = useState([]);
@@ -33,11 +34,12 @@ function RecentDesign() {
               У вас еще нет сохраненных дизайнов. Самое время Сделать Дизайн!
             </p>
           </div>
-
-          <Button className="rounded-full px-8 py-6 text-lg font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95 flex gap-2">
-            <Plus className="w-5 h-5" />
-            Создать Новый
-          </Button>
+          <CustomDialog>
+            <Button className="rounded-full px-8 py-6 text-lg font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95 flex gap-2">
+              <Plus className="w-5 h-5" />
+              Создать
+            </Button>
+          </CustomDialog>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">

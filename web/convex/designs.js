@@ -4,8 +4,8 @@ import { mutation } from "./_generated/server";
 export const CreateNewDesign = mutation({
   args: {
     name: v.string(),
-    width: v.string(),
-    height: v.string(),
+    width: v.number(),
+    height: v.number(),
     uid: v.id("users"),
   },
   handler: async (ctx, args) => {

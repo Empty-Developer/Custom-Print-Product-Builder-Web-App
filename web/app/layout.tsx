@@ -6,6 +6,7 @@ import { ConvexClientProvider } from "./ConvexClientProvider";
 import { StackProvider, StackTheme } from "@stackframe/stack";
 import { stackClientApp } from "../stack/client";
 import Provider from "./provider";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -46,7 +47,10 @@ export default function RootLayout({
           <StackTheme>
             <ConvexClientProvider>
               <Suspense fallback={<div>Загрузка...</div>}>
-                <Provider>{children}</Provider>
+                <Provider>
+                  {children}
+                  <Toaster />
+                </Provider>
               </Suspense>
             </ConvexClientProvider>
           </StackTheme>
