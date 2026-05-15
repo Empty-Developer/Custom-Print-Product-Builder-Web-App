@@ -15,8 +15,7 @@ function RecentDesign() {
       </h2>
 
       {designList.length === 0 ? (
-        <div className="mt-6 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-[2rem] p-12 bg-gray-50/50 transition-all hover:bg-gray-50">
-          {/* Увеличенная картинка с легким эффектом прозрачности */}
+        <div className="mt-6 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-[2rem] p-12 transition-all">
           <div className="relative w-[200px] h-[200px] mb-6 opacity-80">
             <Image 
               src={"/time.png"} 

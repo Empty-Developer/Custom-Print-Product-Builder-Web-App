@@ -25,7 +25,7 @@ export const WorkspaceMenu = [
 
 export const SizeOption = [
   {
-    name: 'Макет под Кружку',
+    name: 'Кружка 125мм',
     width: 170,
     height: 170,
     img: '/cup.png',
@@ -41,5 +41,11 @@ export const SizeOption = [
     width: 211,
     height: 211,
     img: '/56.png',
+  },
+  {
+    name: 'Свой размер',
+    width: 0,
+    height: 0,
+    img: '/papyre.png',
   },
 ]
