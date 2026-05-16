@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { UserDetailContext } from "@/context/UserDetailContext";
 import { toast } from "sonner";
 import CustomDialog from "./CustomDialog";
+import { useRouter } from "next/navigation";
 
 interface SizeOptionType {
   name: string;
@@ -19,24 +20,26 @@ interface SizeOptionType {
 function IntroOptions() {
   const createDesignRecord = useMutation(api.designs.CreateNewDesign);
   const { userDetail }: any = useContext(UserDetailContext);
+  const router = useRouter();
 
   const OnOptionSelect = async (item: SizeOptionType) => {
     if (!userDetail || !userDetail._id) {
-      toast.error('Ошибка: Данные пользователя загружаются...');
+      toast.error("Ошибка: Данные пользователя загружаются...");
       console.error("User detail is null or _id is missing");
       return;
     }
 
-    toast('Загрузка...')
+    toast("Загрузка...");
     try {
       const result = await createDesignRecord({
         name: item.name,
         width: Number(item.width),
         height: Number(item.height),
-        uid: userDetail._id,
+        uid: userDetail._id as any,
       });
       console.log("Результат:", result);
       // navigation to editor screen
+      router.push("/design/" + result);
     } catch (error) {
       console.error("Ошибка при создании:", error);
     }
@@ -99,13 +102,9 @@ function IntroOptions() {
             );
 
             return isLastItem ? (
-              <CustomDialog key={index}>
-                {CardContent}
-              </CustomDialog>
+              <CustomDialog key={index}>{CardContent}</CustomDialog>
             ) : (
-              <React.Fragment key={index}>
-                {CardContent}
-              </React.Fragment>
+              <React.Fragment key={index}>{CardContent}</React.Fragment>
             );
           })}
         </div>

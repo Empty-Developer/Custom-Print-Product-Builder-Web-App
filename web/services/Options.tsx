@@ -1,4 +1,4 @@
-import { Folder, Home, LayoutDashboard, Wallet } from "lucide-react";
+import { AppWindow, Folder, Home, Image, LayoutDashboard, Settings, ShapesIcon, Sparkle, Text, Wallet } from "lucide-react";
 
 export const WorkspaceMenu = [
   {
@@ -17,7 +17,7 @@ export const WorkspaceMenu = [
     path: '/workspace/template'
   },
   {
-    name: 'Billing',
+    name: 'Товары',
     icon: Wallet,
     path: '/workspace/billing'
   }
@@ -47,5 +47,32 @@ export const SizeOption = [
     width: 0,
     height: 0,
     img: '/papyre.png',
+  },
+]
+
+export const sideBarOptions = [
+  {
+    name: "Шаблоны",
+    icon: AppWindow,
+  },
+  {
+    name: "Элементы",
+    icon: ShapesIcon,
+  },
+  {
+    name: "Изаброжения",
+    icon: Image,
+  },
+  {
+    name: "Текст",
+    icon: Text,
+  },
+  {
+    name: "AI",
+    icon: Sparkle,
+  },
+  {
+    name: "Настройки",
+    icon: Settings,
   },
 ]
