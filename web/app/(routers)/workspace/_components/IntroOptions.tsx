@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import React, { useContext } from "react";
-import { Button } from "@/components/ui/button";
 import { SizeOption } from "@/services/Options";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { UserDetailContext } from "@/context/UserDetailContext";
 import { toast } from "sonner";
+import CustomDialog from "./CustomDialog";
 
 interface SizeOptionType {
   name: string;
@@ -19,12 +19,10 @@ interface SizeOptionType {
 function IntroOptions() {
   const createDesignRecord = useMutation(api.designs.CreateNewDesign);
   const { userDetail }: any = useContext(UserDetailContext);
-  /*
-    Used to create new design
-  */
+
   const OnOptionSelect = async (item: SizeOptionType) => {
     if (!userDetail || !userDetail._id) {
-      toast('Ошибка: Данные пользователя загружаются...');
+      toast.error('Ошибка: Данные пользователя загружаются...');
       console.error("User detail is null or _id is missing");
       return;
     }
@@ -62,9 +60,11 @@ function IntroOptions() {
             <p className="text-white/90 text-lg mt-2 drop-shadow-sm max-w-xs leading-snug">
               Создавай уникальные вещи за пару кликов.
             </p>
-            <Button className="mt-6 w-fit h-12 px-10 text-md bg-white text-black hover:bg-gray-100 rounded-full font-bold shadow-xl border-none transition-transform active:scale-95">
-              Создать
-            </Button>
+            <CustomDialog>
+              <div className="mt-6 w-fit h-12 px-10 text-md bg-white text-black hover:bg-gray-100 rounded-full font-bold shadow-xl flex items-center justify-center transition-transform active:scale-95 cursor-pointer">
+                Создать
+              </div>
+            </CustomDialog>
           </div>
         </div>
       </div>
@@ -75,27 +75,39 @@ function IntroOptions() {
         </h3>
 
         <div className="flex flex-wrap gap-6 justify-start">
-          {SizeOption.map((item: any, index: number) => (
-            <div
-              key={index}
-              className="group flex flex-col items-center gap-3 cursor-pointer"
-              onClick={() => OnOptionSelect(item)}
-            >
-              <div className="relative overflow-hidden rounded-2xl border-2 border-transparent group-hover:border-primary transition-all bg-white shadow-sm hover:shadow-md">
-                <Image
-                  src={item.img}
-                  alt={item.name}
-                  width={160}
-                  height={160}
-                  className="object-contain p-4 transition-transform group-hover:scale-110 rounded-3xl"
-                />
-              </div>
+          {SizeOption.map((item: any, index: number) => {
+            const isLastItem = index === SizeOption.length - 1;
+            const CardContent = (
+              <div
+                className="group flex flex-col items-center gap-3 cursor-pointer"
+                onClick={() => !isLastItem && OnOptionSelect(item)} // Клик отправляет запрос в Convex только если это НЕ кастомный размер
+              >
+                <div className="relative overflow-hidden rounded-2xl border-2 border-transparent group-hover:border-primary transition-all bg-white shadow-sm hover:shadow-md">
+                  <Image
+                    src={item.img}
+                    alt={item.name}
+                    width={160}
+                    height={160}
+                    className="object-contain p-4 transition-transform group-hover:scale-110 rounded-3xl"
+                  />
+                </div>
 
-              <span className="text-sm font-semibold text-gray-600 group-hover:text-blue-600 transition-colors">
-                {item.name}
-              </span>
-            </div>
-          ))}
+                <span className="text-sm font-semibold text-gray-600 group-hover:text-blue-600 transition-colors">
+                  {item.name}
+                </span>
+              </div>
+            );
+
+            return isLastItem ? (
+              <CustomDialog key={index}>
+                {CardContent}
+              </CustomDialog>
+            ) : (
+              <React.Fragment key={index}>
+                {CardContent}
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
     </div>

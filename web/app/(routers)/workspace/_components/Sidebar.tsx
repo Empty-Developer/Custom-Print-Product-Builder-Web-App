@@ -5,10 +5,17 @@ import { CirclePlus } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 import CustomDialog from './CustomDialog'
+
 function Sidebar() {
 
   const path = usePathname()
 
+  const TriggerDiv = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  (props, ref) => (
+    <div ref={ref} {...props} />
+  )
+  );
+  TriggerDiv.displayName = "TriggerDiv";
   return (
     <div className='min-h-screen sticky top-0 shadow-sm border-r p-2'>
       <CustomDialog>
