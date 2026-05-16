@@ -29,18 +29,21 @@ export const SizeOption = [
     width: 756,
     height: 756,
     img: '/cup.png',
+    img2: '/fff.png'
   },
   {
     name: 'Значек 45мм',
     width: 170,
     height: 170,
     img: '/45.png',
+    img2: '/ff.png'
   },
   {
     name: 'Значек 56мм',
     width: 211,
     height: 211,
     img: '/56.png',
+    img2: '/ff.png'
   },
   {
     name: 'Свой размер',

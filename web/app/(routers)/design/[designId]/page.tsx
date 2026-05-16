@@ -1,13 +1,14 @@
 "use client"
 
 import { useParams } from 'next/navigation'
-import React from 'react'
+import React, { useState } from 'react'
 import DesignHeader from '../_components/DesignHeader'
+import SideBar from '../_components/SideBar'
+import Editor from '../_components/Editor'
 import { useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { Loader2Icon } from 'lucide-react'
-import SideBar from '../_components/SideBar'
 
 function DesignEditor() {
   const params = useParams()
@@ -19,8 +20,8 @@ function DesignEditor() {
 
   if (designData === undefined) {
     return (
-      <div className='h-screen w-screen flex items-center justify-center gap-2'>
-        <Loader2Icon className='animate-spin h-6 w-6 text-primary' />
+      <div className='h-screen w-screen flex items-center justify-center gap-2 bg-gray-50'>
+        <Loader2Icon className='animate-spin h-6 w-6 text-blue-600' />
         <span className='text-sm text-gray-500 font-medium'>Загрузка проекта...</span>
       </div>
     )
@@ -28,7 +29,7 @@ function DesignEditor() {
 
   if (designData === null) {
     return (
-      <div className='h-screen w-screen flex items-center justify-center flex-col gap-2'>
+      <div className='h-screen w-screen flex items-center justify-center flex-col gap-2 bg-gray-50'>
         <h2 className='text-xl font-bold text-gray-800'>Макет не найден</h2>
         <p className='text-sm text-gray-500'>Возможно, он был удален или ссылка неверна.</p>
       </div>
@@ -36,9 +37,15 @@ function DesignEditor() {
   }
 
   return (
-    <div>
+    <div className="h-screen flex flex-col overflow-hidden bg-gray-100">
       <DesignHeader designData={designData}/>
-      <SideBar />
+      <div className="flex flex-1 overflow-hidden">
+        <SideBar />
+        <div className="flex-1 flex items-center justify-center p-12 overflow-auto">
+          <Editor designData={designData} />
+        </div>
+
+      </div>
     </div>
   )
 }

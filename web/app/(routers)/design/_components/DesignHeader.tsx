@@ -39,7 +39,7 @@ function DesignHeader({ designData }: { designData: any }) {
   }
 
   return (
-    <div className='p-3 flex justify-between items-center shadow-sm bg-white'>
+    <div className='p-3 flex justify-between items-center shadow-sm bg-white border-b'>
       <div className='flex items-center gap-4'>
         <Image
           src={'/logo.png'}
