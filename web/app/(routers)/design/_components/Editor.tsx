@@ -1,29 +1,31 @@
-"use client"
+"use client";
 
-import * as fabric from 'fabric'
-import React, { useEffect, useRef } from 'react'
-import { SizeOption } from '@/services/Options'
+import * as fabric from "fabric";
+import React, { useEffect, useRef } from "react";
+import { SizeOption } from "@/services/Options";
+import { useCanvasHook } from "../[designId]/page";
 
 interface EditorProps {
   designData: {
     _id: string;
     name: string;
     width: number;
-    height: number; // Реальные размеры для печати (например, 170 или 211)
+    height: number;
   };
 }
 
 function Editor({ designData }: EditorProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const fabricCanvasRef = useRef<fabric.Canvas | null>(null)
-  const DISPLAY_SIZE = 500; 
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
+  const DISPLAY_SIZE = 500;
   const canvasWidth = DISPLAY_SIZE;
   const canvasHeight = DISPLAY_SIZE;
   const printWidth = designData?.width || 500;
   const printHeight = designData?.height || 500;
+  const { setCanvasEditor } = useCanvasHook();
 
   const matchedOption = SizeOption.find(
-    (option) => option.width === printWidth && option.height === printHeight
+    (option) => option.width === printWidth && option.height === printHeight,
   );
 
   const isCustomSize = !matchedOption || matchedOption.width === 0;
@@ -34,86 +36,110 @@ function Editor({ designData }: EditorProps) {
     const canvas = new fabric.Canvas(canvasRef.current, {
       width: canvasWidth,
       height: canvasHeight,
-      backgroundColor: isCustomSize ? '#ffffff' : 'transparent',
-    })
+      backgroundColor: isCustomSize ? "#ffffff" : "transparent",
+    });
 
+    setCanvasEditor(canvas);
     fabricCanvasRef.current = canvas;
+
     let itemClipPath: fabric.Object | null = null;
+    let bgShape: fabric.Object | null = null;
 
     if (!isCustomSize && matchedOption?.img2) {
-      fabric.FabricImage.fromURL(matchedOption.img2).then((img2) => {
-        if (designData.name.includes('Кружка')) {
-          img2.scaleToWidth(canvasWidth * 0.90);
-        } else {
-          img2.scaleToWidth(canvasWidth * 0.95);
-        }
-        
-        img2.set({
-          selectable: false,
-          evented: false,
-        });
+      fabric.FabricImage.fromURL(matchedOption.img2)
+        .then((img2) => {
+          if (designData.name.includes("Кружка")) {
+            img2.scaleToWidth(canvasWidth * 0.9);
+          } else {
+            img2.scaleToWidth(canvasWidth * 0.95);
+          }
 
-        canvas.add(img2);
-        canvas.centerObject(img2);
-        canvas.sendObjectToBack(img2);
-
-        // setting for badge
-        if (designData.name.includes('Значек')) {
-          
-          const badgeRadius = 145;
-          const badgeLeft = (canvasWidth / 2) - 86;
-          const badgeTop = canvasHeight / 2;
-
-          itemClipPath = new fabric.Circle({
-            radius: badgeRadius, 
-            left: badgeLeft,
-            top: badgeTop,
-            originX: 'center',
-            originY: 'center',
-            absolutePositioned: true
+          img2.set({
+            selectable: false,
+            evented: false,
           });
-        } 
-        
-        // setting for cup
-        else if (designData.name.includes('Кружка')) {
-          itemClipPath = new fabric.Rect({
-            width: img2.getScaledWidth() * 0.70, 
-            height: img2.getScaledHeight() * 0.83, 
-            left: (canvasWidth / 2) - (img2.getScaledWidth() * 0.14), 
-            top: canvasHeight / 2,
-            originX: 'center',
-            originY: 'center',
-            absolutePositioned: true
-          });
-        }
 
-        if (itemClipPath && text) {
-          text.set({ clipPath: itemClipPath });
+          canvas.add(img2);
+          canvas.centerObject(img2);
+          canvas.sendObjectToBack(img2);
+
+          if (designData.name.includes("Значек")) {
+            const badgeRadius = 145;
+            const badgeLeft = canvasWidth / 2 - 86;
+            const badgeTop = canvasHeight / 2;
+
+            itemClipPath = new fabric.Circle({
+              radius: badgeRadius,
+              left: badgeLeft,
+              top: badgeTop,
+              originX: "center",
+              originY: "center",
+              absolutePositioned: true,
+            });
+
+            bgShape = new fabric.Circle({
+              radius: badgeRadius,
+              left: badgeLeft,
+              top: badgeTop,
+              originX: "center",
+              originY: "center",
+              fill: "transparent",
+              selectable: false,
+              evented: false,
+              id: "custom-bg-shape",
+            });
+          } else if (designData.name.includes("Кружка")) {
+            const rectWidth = img2.getScaledWidth() * 0.7;
+            const rectHeight = img2.getScaledHeight() * 0.83;
+            const rectLeft = canvasWidth / 2 - img2.getScaledWidth() * 0.14;
+            const rectTop = canvasHeight / 2;
+
+            itemClipPath = new fabric.Rect({
+              width: rectWidth,
+              height: rectHeight,
+              left: rectLeft,
+              top: rectTop,
+              originX: "center",
+              originY: "center",
+              absolutePositioned: true,
+            });
+
+            bgShape = new fabric.Rect({
+              width: rectWidth,
+              height: rectHeight,
+              left: rectLeft,
+              top: rectTop,
+              originX: "center",
+              originY: "center",
+              fill: "transparent",
+              selectable: false,
+              evented: false,
+              id: "custom-bg-shape",
+            });
+          }
+
+          if (bgShape) {
+            canvas.add(bgShape);
+            canvas.sendObjectToBack(bgShape);
+            canvas.bringObjectForward(bgShape, false);
+          }
+
           canvas.renderAll();
-        }
-
-        canvas.renderAll();
-      }).catch((err) => {
-        console.error("Ошибка загрузки элемента товара:", err);
-      });
+        })
+        .catch((err) => {
+          console.error("Ошибка загрузки элемента товара:", err);
+        });
     }
 
-    const text = new fabric.IText('Перетащи меня', {
-      top: canvasHeight / 2 - 15,
-      fontSize: 18,
-      fill: isCustomSize ? '#000000' : '#1e293b',
-    });
-    
-    canvas.add(text);
-    canvas.centerObjectH(text);
-    
-    if (!isCustomSize && designData.name.includes('Значек')) {
-      text.set({ left: canvasWidth * 0.25 });
-    }
-
-    canvas.on('object:added', (e) => {
+    canvas.on("object:added", (e) => {
       const obj = e.target;
-      if (obj && obj !== canvas.getObjects()[0] && itemClipPath) {
+      // @ts-ignore
+      if (
+        obj &&
+        obj !== canvas.getObjects()[0] &&
+        obj.id !== "custom-bg-shape" &&
+        itemClipPath
+      ) {
         obj.set({ clipPath: itemClipPath });
         canvas.renderAll();
       }
@@ -125,22 +151,23 @@ function Editor({ designData }: EditorProps) {
       if (fabricCanvasRef.current) {
         fabricCanvasRef.current.dispose();
         fabricCanvasRef.current = null;
+        setCanvasEditor(null);
       }
-    }
-  }, [designData, isCustomSize])
+    };
+  }, [designData, isCustomSize]);
 
   return (
-    <div 
+    <div
       className={`transition-all duration-300 ${
-        isCustomSize 
-          ? 'bg-white shadow-2xl rounded-xl border border-gray-200' 
-          : 'bg-transparent'
+        isCustomSize
+          ? "bg-white shadow-2xl rounded-xl border border-gray-200"
+          : "bg-transparent"
       }`}
       style={{ width: canvasWidth, height: canvasHeight }}
     >
       <canvas ref={canvasRef} />
     </div>
-  )
+  );
 }
 
 export default Editor;

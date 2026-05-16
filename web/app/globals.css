@@ -4,6 +4,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.chrome-picker {
+  width: auto !important;
+  box-shadow: none !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden !important;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

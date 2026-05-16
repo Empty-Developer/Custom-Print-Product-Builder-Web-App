@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import DesignHeader from '../_components/DesignHeader'
 import SideBar from '../_components/SideBar'
 import Editor from '../_components/Editor'
@@ -9,10 +9,12 @@ import { useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { Loader2Icon } from 'lucide-react'
+import {CanvasContext } from '@/context/CanvasContext'
 
 function DesignEditor() {
   const params = useParams()
   const designId = params?.designId as Id<"designs">
+  const [canvasEditor, setCanvasEditor] = useState<any>(null)
 
   const designData = useQuery(api.designs.GetDesign, 
     designId ? { id: designId } : "skip"
@@ -38,16 +40,26 @@ function DesignEditor() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-gray-100">
-      <DesignHeader designData={designData}/>
-      <div className="flex flex-1 overflow-hidden">
-        <SideBar />
-        <div className="flex-1 flex items-center justify-center p-12 overflow-auto">
-          <Editor designData={designData} />
-        </div>
+      <CanvasContext.Provider value={{canvasEditor, setCanvasEditor}}>
+        <DesignHeader designData={designData}/>
+        <div className="flex flex-1 overflow-hidden">
+          <SideBar />
+          <div className="flex-1 flex items-center justify-center p-12 overflow-auto">
+            <Editor designData={designData} />
+          </div>
 
-      </div>
+        </div>
+      </CanvasContext.Provider>
     </div>
   )
 }
 
 export default DesignEditor
+
+export const useCanvasHook = () => {
+  const context = useContext(CanvasContext)
+  if (!context) {
+    throw new Error("useCanvasHook должен использоваться строго внутри CanvasContext.Provider")
+  }
+  return context
+}

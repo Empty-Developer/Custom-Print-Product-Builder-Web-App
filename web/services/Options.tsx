@@ -1,4 +1,5 @@
-import { AppWindow, Folder, Home, Image, LayoutDashboard, Settings, ShapesIcon, Sparkle, Text, Wallet } from "lucide-react";
+import { AppWindow, Brush, Folder, Home, Image, LayoutDashboard, Settings, ShapesIcon, Sparkle, Text, Wallet } from "lucide-react";
+import BackgroundSetting from "./Components/BackgroundSetting";
 
 export const WorkspaceMenu = [
   {
@@ -63,7 +64,7 @@ export const sideBarOptions = [
     icon: ShapesIcon,
   },
   {
-    name: "Изаброжения",
+    name: "Изоброжения",
     icon: Image,
   },
   {
@@ -73,6 +74,11 @@ export const sideBarOptions = [
   {
     name: "AI",
     icon: Sparkle,
+  },
+  {
+    name: "Заливка",
+    icon: Brush,
+    component: () => <BackgroundSetting />,
   },
   {
     name: "Настройки",
