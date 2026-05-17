@@ -17,6 +17,7 @@ interface EditorProps {
 function Editor({ designData }: EditorProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
+
   const DISPLAY_SIZE = 500;
   const canvasWidth = DISPLAY_SIZE;
   const canvasHeight = DISPLAY_SIZE;
@@ -42,8 +43,8 @@ function Editor({ designData }: EditorProps) {
     setCanvasEditor(canvas);
     fabricCanvasRef.current = canvas;
 
-    let itemClipPath: fabric.Object | null = null;
     let bgShape: fabric.Object | null = null;
+    let itemClipPath: fabric.Object | null = null;
 
     if (!isCustomSize && matchedOption?.img2) {
       fabric.FabricImage.fromURL(matchedOption.img2)
@@ -88,7 +89,8 @@ function Editor({ designData }: EditorProps) {
               evented: false,
               id: "custom-bg-shape",
             });
-          } else if (designData.name.includes("Кружка")) {
+          }
+          else if (designData.name.includes("Кружка")) {
             const rectWidth = img2.getScaledWidth() * 0.7;
             const rectHeight = img2.getScaledHeight() * 0.83;
             const rectLeft = canvasWidth / 2 - img2.getScaledWidth() * 0.14;
@@ -124,26 +126,27 @@ function Editor({ designData }: EditorProps) {
             canvas.bringObjectForward(bgShape, false);
           }
 
+          const totalObjects = canvas.getObjects().length;
+          canvas.getObjects().forEach((obj) => {
+            // @ts-ignore
+            if (obj.isUserImage) {
+              canvas.moveObjectTo(obj, totalObjects - 1);
+            }
+          });
+
+          if (itemClipPath) {
+            // @ts-ignore
+            canvas.activeClipPath = itemClipPath;
+          }
+
+          canvas.renderAll();
+
           canvas.renderAll();
         })
         .catch((err) => {
           console.error("Ошибка загрузки элемента товара:", err);
         });
     }
-
-    canvas.on("object:added", (e) => {
-      const obj = e.target;
-      // @ts-ignore
-      if (
-        obj &&
-        obj !== canvas.getObjects()[0] &&
-        obj.id !== "custom-bg-shape" &&
-        itemClipPath
-      ) {
-        obj.set({ clipPath: itemClipPath });
-        canvas.renderAll();
-      }
-    });
 
     canvas.renderAll();
 

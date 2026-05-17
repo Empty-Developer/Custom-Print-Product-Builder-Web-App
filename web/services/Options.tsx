@@ -1,5 +1,6 @@
 import { AppWindow, Brush, Folder, Home, Image, LayoutDashboard, Settings, ShapesIcon, Sparkle, Text, Wallet } from "lucide-react";
 import BackgroundSetting from "./Components/BackgroundSetting";
+import AddImageSetting from "./Components/AddImageSetting";
 
 export const WorkspaceMenu = [
   {
@@ -27,8 +28,8 @@ export const WorkspaceMenu = [
 export const SizeOption = [
   {
     name: 'Кружка 200мм',
-    width: 756,
-    height: 756,
+    width: 567,
+    height: 280,
     img: '/cup.png',
     img2: '/fff.png'
   },
@@ -56,24 +57,17 @@ export const SizeOption = [
 
 export const sideBarOptions = [
   {
-    name: "Шаблоны",
-    icon: AppWindow,
-  },
-  {
     name: "Элементы",
     icon: ShapesIcon,
   },
   {
     name: "Изоброжения",
     icon: Image,
+    component: () => <AddImageSetting />,
   },
   {
     name: "Текст",
     icon: Text,
-  },
-  {
-    name: "AI",
-    icon: Sparkle,
   },
   {
     name: "Заливка",
